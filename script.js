@@ -10,7 +10,6 @@ const loginScreen = document.getElementById('loginScreen');
 const characterSelect = document.getElementById('characterSelect');
 const mainPanel = document.getElementById('mainPanel');
 const loginForm = document.getElementById('loginForm');
-const showRegister = document.getElementById('showRegister'); // Usuniemy to
 const characterList = document.getElementById('characterList');
 const logoutBtn = document.getElementById('logoutBtn');
 const tabLinks = document.querySelectorAll('[data-tab]');
@@ -27,7 +26,7 @@ let members = [];
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
-    const loggedInUser  = localStorage.getItem('loggedInUser   ');
+    const loggedInUser  = localStorage.getItem('loggedInUser ');
     if (loggedInUser ) {
         loginScreen.classList.add('hidden');
         loadCharacters();
@@ -53,7 +52,7 @@ loginForm.addEventListener('submit', (e) => {
     
     if (user) {
         // Zaloguj użytkownika
-        localStorage.setItem('loggedInUser   ', username);
+        localStorage.setItem('loggedInUser ', username);
         loginScreen.classList.add('hidden');
         loadCharacters();
         characterSelect.classList.remove('hidden');
@@ -62,13 +61,10 @@ loginForm.addEventListener('submit', (e) => {
     }
 });
 
-// Usunięcie możliwości rejestracji
-showRegister.style.display = 'none'; // Ukryj link do rejestracji
-
 // Load characters from localStorage
 function loadCharacters() {
     characterList.innerHTML = '';
-    const loggedInUser  = localStorage.getItem('loggedInUser   ');
+    const loggedInUser  = localStorage.getItem('loggedInUser ');
     const user = users.find(user => user.username === loggedInUser );
 
     if (user && user.character) {
@@ -106,7 +102,7 @@ function selectCharacter(character) {
 
 // Logout
 logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser   ');
+    localStorage.removeItem('loggedInUser ');
     mainPanel.classList.add('hidden');
     characterSelect.classList.add('hidden');
     loginScreen.classList.remove('hidden');
@@ -202,3 +198,12 @@ window.addEventListener('click', (e) => {
         addMemberModal.classList.remove('active');
     }
 });
+
+// Zakładka do tworzenia kont
+function createAccount(username, password, character) {
+    const newUser  = { username, password, character };
+    users.push(newUser );
+}
+
+// Przykładowe dodanie konta
+createAccount('newUser ', 'newPassword', { id: 4, name: 'New Character', type: 'Soldier' });
