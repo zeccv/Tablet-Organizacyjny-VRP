@@ -15,8 +15,8 @@ let loggedUserRole = null; // rola użytkownika
 
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const username = document.getElementById('loginUsername').value;
-  const password = document.getElementById('loginPassword').value;
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
 
   try {
     const response = await fetch('https://tablet-organizacyjny-vrp.onrender.com/login', {
@@ -67,7 +67,7 @@ function selectCharacter(character) {
   mainPanel.classList.remove('hidden');
   characterNameDisplay.textContent = character.name;
   characterRankDisplay.textContent = character.type;
-  characterAvatar.src = `https://placehold.co/100x100?text=${character.type}`;
+  characterAvatar.src = `https://placehold.co/100x100?text=${encodeURIComponent(character.type)}`;
 
   updateUIByRole();
 
@@ -185,16 +185,16 @@ function renderTasks(tasks) {
     form.id = 'addTaskForm';
     form.innerHTML = `
       <h3>Dodaj nowe zadanie</h3>
-      <div class="form-row">
-        <input type="text" id="newTaskTitle" placeholder="Tytuł zadania" required />
-        <input type="text" id="newTaskLocation" placeholder="Lokalizacja" />
+      <div class="form-row" style="display:flex; gap:1rem; margin-bottom:1rem;">
+        <input type="text" id="newTaskTitle" placeholder="Tytuł zadania" required style="flex:1" />
+        <input type="text" id="newTaskLocation" placeholder="Lokalizacja" style="flex:1" />
       </div>
-      <textarea id="newTaskDescription" placeholder="Opis zadania"></textarea>
-      <div class="form-row">
-        <input type="datetime-local" id="newTaskDeadline" placeholder="Czas do kiedy" />
-        <input type="text" id="newTaskReward" placeholder="Nagroda za wykonanie" />
+      <textarea id="newTaskDescription" placeholder="Opis zadania" style="width:100%; margin-bottom:1rem;"></textarea>
+      <div class="form-row" style="display:flex; gap:1rem;">
+        <input type="datetime-local" id="newTaskDeadline" placeholder="Czas do kiedy" style="flex:1" />
+        <input type="text" id="newTaskReward" placeholder="Nagroda za wykonanie" style="flex:1" />
       </div>
-      <button type="submit" class="btn">Dodaj</button>
+      <button type="submit" class="btn" style="margin-top:1rem;">Dodaj</button>
     `;
     missionsTab.appendChild(form);
 

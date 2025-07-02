@@ -34,6 +34,22 @@ body {
     display: none !important;
 }
 
+/* Ukrywanie wszystkich tabów poza aktywnym */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Podkreślenie i styl aktywnej zakładki w sidebar */
+.sidebar-menu a.active {
+    font-weight: bold;
+    color: #ffd54f;
+    background-color: var(--primary-color);
+}
+
 /* Login Screen */
 #loginScreen {
     display: flex;
