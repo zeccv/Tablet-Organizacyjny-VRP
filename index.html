@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Criminal MDT</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="container">
@@ -16,11 +15,11 @@
                 <form id="loginForm">
                     <div class="form-group">
                         <label for="loginUsername">Nazwa użytkownika</label>
-                        <input type="text" id="loginUsername" required>
+                        <input type="text" id="loginUsername" required />
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Hasło</label>
-                        <input type="password" id="loginPassword" required>
+                        <input type="password" id="loginPassword" required />
                     </div>
                     <button type="submit" class="btn">Zaloguj</button>
                 </form>
@@ -37,33 +36,76 @@
         <div id="mainPanel" class="hidden">
             <div class="sidebar">
                 <div class="sidebar-header">
-                    <img src="https://placehold.co/100x100" alt="Avatar aktualnej postaci użytkownika" id="characterAvatar">
+                    <img
+                        src="https://placehold.co/100x100"
+                        alt="Avatar aktualnej postaci użytkownika"
+                        id="characterAvatar"
+                    />
                     <div>
                         <h3 id="characterNameDisplay">John Doe</h3>
                         <p id="characterRankDisplay">Boss</p>
                     </div>
                 </div>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="active" data-tab="members"><i>👥</i> Członkowie</a></li>
-                    <li><a href="#" data-tab="missions"><i>📋</i> Zadania</a></li>
-                    <li><a href="#" data-tab="locations"><i>📍</i> Lokalizacje</a></li>
-                    <li><a href="#" data-tab="equipment"><i>🎒</i> Ekwipunek</a></li>
-                    <li><a href="#" data-tab="logs"><i>📜</i> Logi</a></li>
-                    <li><a href="#" data-tab="settings"><i>⚙️</i> Ustawienia</a></li>
+                    <li>
+                        <a href="#" class="active" data-tab="members"
+                            ><i>👥</i> Członkowie</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" data-tab="missions"
+                            ><i>📋</i> Zadania</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" data-tab="locations"
+                            ><i>📍</i> Lokalizacje</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" data-tab="equipment"
+                            ><i>🎒</i> Ekwipunek</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" data-tab="logs"><i>📜</i> Logi</a>
+                    </li>
+                    <li>
+                        <a href="#" data-tab="settings"
+                            ><i>⚙️</i> Ustawienia</a
+                        >
+                    </li>
                     <li><a href="#" id="logoutBtn"><i>🚪</i> Wyloguj</a></li>
                 </ul>
             </div>
             <div class="content-area">
                 <div class="tab-content active" id="membersTab">
                     <h2>Członkowie organizacji</h2>
-                    <button class="btn" id="addMemberBtn" style="margin-top: 1rem;">Dodaj członka</button>
+                    <button
+                        class="btn"
+                        id="addMemberBtn"
+                        style="margin-top: 1rem; display:none"
+                    >
+                        Dodaj członka
+                    </button>
                     <div class="members-list" id="membersList"></div>
                 </div>
-                <div class="tab-content" id="missionsTab"><h2>Zadania</h2></div>
-                <div class="tab-content" id="locationsTab"><h2>Lokalizacje</h2></div>
-                <div class="tab-content" id="equipmentTab"><h2>Ekwipunek</h2></div>
-                <div class="tab-content" id="logsTab"><h2>Logi</h2></div>
-                <div class="tab-content" id="settingsTab"><h2>Ustawienia</h2></div>
+                <div class="tab-content" id="missionsTab">
+                    <h2>Zadania</h2>
+                    <p>Tu będą zadania...</p>
+                </div>
+                <div class="tab-content" id="locationsTab">
+                    <h2>Lokalizacje</h2>
+                </div>
+                <div class="tab-content" id="equipmentTab">
+                    <h2>Ekwipunek</h2>
+                </div>
+                <div class="tab-content" id="logsTab">
+                    <h2>Logi</h2>
+                </div>
+                <div class="tab-content" id="settingsTab">
+                    <h2>Ustawienia</h2>
+                </div>
             </div>
         </div>
     </div>

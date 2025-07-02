@@ -8,8 +8,10 @@ const characterRankDisplay = document.getElementById('characterRankDisplay');
 const characterAvatar = document.getElementById('characterAvatar');
 
 const addMemberBtn = document.getElementById('addMemberBtn');
+const sidebarMenuLinks = document.querySelectorAll('.sidebar-menu a[data-tab]');
+const tabContents = document.querySelectorAll('.tab-content');
 
-let loggedUserRole = null; // tu zapiszemy rolę użytkownika
+let loggedUserRole = null; // rola użytkownika
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -17,17 +19,20 @@ loginForm.addEventListener('submit', async (e) => {
     const password = document.getElementById('loginPassword').value;
 
     try {
-        const response = await fetch('https://tablet-organizacyjny-vrp.onrender.com/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
+        const response = await fetch(
+            'https://tablet-organizacyjny-vrp.onrender.com/login',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            }
+        );
 
         const data = await response.json();
 
         if (data.success) {
             localStorage.setItem('loggedInUser', data.username);
-            localStorage.setItem('userRole', data.role); // zapisujemy rolę
+            localStorage.setItem('userRole', data.role); // Zapisz rolę
             loggedUserRole = data.role;
 
             loadCharacters({ character: data.character });
@@ -67,19 +72,50 @@ function selectCharacter(character) {
     characterRankDisplay.textContent = character.type;
     characterAvatar.src = `https://placehold.co/100x100?text=${character.type}`;
 
-    // Po załadowaniu panelu ustaw widoczność przycisku na podstawie roli:
     updateUIByRole();
+
+    // Aktywuj domyślną zakładkę (np. "Członkowie")
+    activateTab('members');
 }
 
 function updateUIByRole() {
     const role = loggedUserRole || localStorage.getItem('userRole');
 
     if (role === 'admin') {
-        addMemberBtn.style.display = 'inline-block'; // pokaż przycisk
+        addMemberBtn.style.display = 'inline-block'; // pokaż przycisk dodawania członka
     } else {
         addMemberBtn.style.display = 'none'; // ukryj przycisk
     }
 }
+
+// Funkcja do aktywowania zakładek
+function activateTab(tabName) {
+    // Usuń klasę active z wszystkich linków i tabów
+    sidebarMenuLinks.forEach((link) => {
+        if (link.dataset.tab === tabName) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+
+    tabContents.forEach((tab) => {
+        if (tab.id === tabName + 'Tab') {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+}
+
+// Obsługa kliknięć na zakładki menu bocznego
+sidebarMenuLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const selectedTab = link.dataset.tab;
+        activateTab(selectedTab);
+    });
+});
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('loggedInUser');
