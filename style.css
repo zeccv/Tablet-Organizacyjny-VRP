@@ -30,10 +30,6 @@ body {
     margin: 0 auto;
 }
 
-.hidden {
-    display: none !important;
-}
-
 /* Ukrywanie wszystkich tabów poza aktywnym */
 .tab-content {
     display: none;
@@ -182,6 +178,7 @@ body {
     padding: 1rem;
     margin-right: 1.5rem;
     flex-shrink: 0;
+    height: auto;
 }
 
 .sidebar-header {
@@ -232,6 +229,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    min-height: 80vh;
+    /* kluczowa zmiana: obok sidebar */
 }
 
 /* Zadania - karty */
