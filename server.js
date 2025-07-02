@@ -10,9 +10,9 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// PostgreSQL config — wstaw tu swój connection string z Neon
+// PostgreSQL config — wpisz swój connection string z Neon
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // lub wpisz go tu jako string
+  connectionString: process.env.DATABASE_URL, 
   ssl: { rejectUnauthorized: false }
 });
 
@@ -37,7 +37,8 @@ app.post('/login', async (req, res) => {
     res.json({
       success: true,
       character: user.character_data,
-      username: user.username
+      username: user.username,
+      role: user.role  // <-- Zwracamy rolę
     });
   } catch (err) {
     console.error(err);
@@ -45,16 +46,16 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// (Opcjonalnie) REJESTRACJA
+// REJESTRACJA
 app.post('/register', async (req, res) => {
-  const { username, password, character_data } = req.body;
+  const { username, password, character_data, role = 'user' } = req.body;  // role domyślnie 'user'
 
   try {
     const hash = await bcrypt.hash(password, 10);
 
     await pool.query(
-      'INSERT INTO users (username, password_hash, character_data) VALUES ($1, $2, $3)',
-      [username, hash, character_data]
+      'INSERT INTO users (username, password_hash, character_data, role) VALUES ($1, $2, $3, $4)',
+      [username, hash, character_data, role]
     );
 
     res.json({ success: true });

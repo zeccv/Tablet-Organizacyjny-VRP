@@ -7,6 +7,10 @@ const characterNameDisplay = document.getElementById('characterNameDisplay');
 const characterRankDisplay = document.getElementById('characterRankDisplay');
 const characterAvatar = document.getElementById('characterAvatar');
 
+const addMemberBtn = document.getElementById('addMemberBtn');
+
+let loggedUserRole = null; // tu zapiszemy rolę użytkownika
+
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value;
@@ -23,7 +27,11 @@ loginForm.addEventListener('submit', async (e) => {
 
         if (data.success) {
             localStorage.setItem('loggedInUser', data.username);
+            localStorage.setItem('userRole', data.role); // zapisujemy rolę
+            loggedUserRole = data.role;
+
             loadCharacters({ character: data.character });
+
             loginScreen.classList.add('hidden');
             characterSelect.classList.remove('hidden');
         } else {
@@ -58,10 +66,26 @@ function selectCharacter(character) {
     characterNameDisplay.textContent = character.name;
     characterRankDisplay.textContent = character.type;
     characterAvatar.src = `https://placehold.co/100x100?text=${character.type}`;
+
+    // Po załadowaniu panelu ustaw widoczność przycisku na podstawie roli:
+    updateUIByRole();
+}
+
+function updateUIByRole() {
+    const role = loggedUserRole || localStorage.getItem('userRole');
+
+    if (role === 'admin') {
+        addMemberBtn.style.display = 'inline-block'; // pokaż przycisk
+    } else {
+        addMemberBtn.style.display = 'none'; // ukryj przycisk
+    }
 }
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('userRole');
+    loggedUserRole = null;
+
     mainPanel.classList.add('hidden');
     characterSelect.classList.add('hidden');
     loginScreen.classList.remove('hidden');
