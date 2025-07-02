@@ -172,7 +172,7 @@ body {
 #mainPanel {
     display: flex;
     min-height: 80vh;
-    flex-direction: column; /* aby mieć możliwość pozycjonowania formularza na dole */
+    flex-direction: row;
 }
 
 .sidebar {
@@ -200,6 +200,7 @@ body {
 
 .sidebar-menu {
     list-style: none;
+    padding-left: 0;
 }
 
 .sidebar-menu li {
