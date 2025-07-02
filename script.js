@@ -1,8 +1,8 @@
 // Przykładowa lista użytkowników (ustalone przez administratorów)
 const users = [
-    { username: 'admin', password: 'admin123' },
-    { username: 'user1', password: 'password1' },
-    { username: 'user2', password: 'password2' }
+    { username: 'admin', password: 'admin123', character: { id: 1, name: 'Samir Makajew', type: 'Boss' } },
+    { username: 'user1', password: 'password1', character: { id: 2, name: 'John Doe', type: 'Lieutenant' } },
+    { username: 'user2', password: 'password2', character: { id: 3, name: 'Jane Smith', type: 'Soldier' } }
 ];
 
 // DOM Elements
@@ -12,15 +12,9 @@ const mainPanel = document.getElementById('mainPanel');
 const loginForm = document.getElementById('loginForm');
 const showRegister = document.getElementById('showRegister'); // Usuniemy to
 const characterList = document.getElementById('characterList');
-const createCharacterBtn = document.getElementById('createCharacterBtn');
-const createCharacterModal = document.getElementById('createCharacterModal');
-const characterForm = document.getElementById('characterForm');
 const logoutBtn = document.getElementById('logoutBtn');
 const tabLinks = document.querySelectorAll('[data-tab]');
 const tabContents = document.querySelectorAll('.tab-content');
-const addMemberBtn = document.getElementById('addMemberBtn');
-const addMemberModal = document.getElementById('addMemberModal');
-const memberForm = document.getElementById('memberForm');
 const membersList = document.getElementById('membersList');
 const characterNameDisplay = document.getElementById('characterNameDisplay');
 const characterRankDisplay = document.getElementById('characterRankDisplay');
@@ -33,8 +27,8 @@ let members = [];
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
-    const loggedInUser   = localStorage.getItem('loggedInUser  ');
-    if (loggedInUser  ) {
+    const loggedInUser  = localStorage.getItem('loggedInUser   ');
+    if (loggedInUser ) {
         loginScreen.classList.add('hidden');
         loadCharacters();
         characterSelect.classList.remove('hidden');
@@ -59,7 +53,7 @@ loginForm.addEventListener('submit', (e) => {
     
     if (user) {
         // Zaloguj użytkownika
-        localStorage.setItem('loggedInUser  ', username);
+        localStorage.setItem('loggedInUser   ', username);
         loginScreen.classList.add('hidden');
         loadCharacters();
         characterSelect.classList.remove('hidden');
@@ -74,59 +68,22 @@ showRegister.style.display = 'none'; // Ukryj link do rejestracji
 // Load characters from localStorage
 function loadCharacters() {
     characterList.innerHTML = '';
-    const characters = JSON.parse(localStorage.getItem('characters')) || [];
-    
-    characters.forEach(character => {
+    const loggedInUser  = localStorage.getItem('loggedInUser   ');
+    const user = users.find(user => user.username === loggedInUser );
+
+    if (user && user.character) {
         const characterCard = document.createElement('div');
         characterCard.className = 'character-card';
         characterCard.innerHTML = `
-            <div class="character-type">${character.type}</div>
-            <h3>${character.name}</h3>
-            <p>Ranga: ${character.type}</p>
+            <div class="character-type">${user.character.type}</div>
+            <h3>${user.character.name}</h3>
+            <p>Ranga: ${user.character.type}</p>
             <p>Status: Active</p>
         `;
-        characterCard.addEventListener('click', () => selectCharacter(character));
+        characterCard.addEventListener('click', () => selectCharacter(user.character));
         characterList.appendChild(characterCard);
-    });
+    }
 }
-
-// Create Character Modal
-createCharacterBtn.addEventListener('click', () => {
-    createCharacterModal.classList.add('active');
-});
-
-// Close Modal
-document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', () => {
-        createCharacterModal.classList.remove('active');
-        addMemberModal.classList.remove('active');
-    });
-});
-
-// Character Form
-characterForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('newCharacterName').value;
-    const type = document.getElementById('newCharacterType').value;
-    
-    const newCharacter = {
-        id: Date.now(),
-        name,
-        type,
-        rank: type, // Initial rank matches type
-        status: 'Active'
-    };
-    
-    // Save to localStorage
-    const characters = JSON.parse(localStorage.getItem('characters')) || [];
-    characters.push(newCharacter);
-    localStorage.setItem('characters', JSON.stringify(characters));
-    
-    // Update UI
-    loadCharacters();
-    characterForm.reset();
-    createCharacterModal.classList.remove('active');
-});
 
 // Select Character
 function selectCharacter(character) {
@@ -149,7 +106,7 @@ function selectCharacter(character) {
 
 // Logout
 logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser  ');
+    localStorage.removeItem('loggedInUser   ');
     mainPanel.classList.add('hidden');
     characterSelect.classList.add('hidden');
     loginScreen.classList.remove('hidden');
@@ -169,34 +126,6 @@ tabLinks.forEach(link => {
         const tabId = link.getAttribute('data-tab') + 'Tab';
         document.getElementById(tabId).classList.add('active');
     });
-});
-
-// Add Member Modal
-addMemberBtn.addEventListener('click', () => {
-    addMemberModal.classList.add('active');
-});
-
-// Member Form
-memberForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('memberName').value;
-    const rank = document.getElementById('memberRank').value;
-    const status = document.getElementById('memberStatus').value;
-    
-    const newMember = {
-        id: Date.now(),
-        name,
-        rank,
-        status,
-        joinDate: new Date().toLocaleDateString()
-    };
-    
-    members.push(newMember);
-    localStorage.setItem('organizationMembers', JSON.stringify(members));
-    
-    renderMembers();
-    memberForm.reset();
-    addMemberModal.classList.remove('active');
 });
 
 // Render Members
