@@ -1,9 +1,16 @@
+// Przykładowa lista użytkowników (ustalone przez administratorów)
+const users = [
+    { username: 'admin', password: 'admin123' },
+    { username: 'user1', password: 'password1' },
+    { username: 'user2', password: 'password2' }
+];
+
 // DOM Elements
 const loginScreen = document.getElementById('loginScreen');
 const characterSelect = document.getElementById('characterSelect');
 const mainPanel = document.getElementById('mainPanel');
 const loginForm = document.getElementById('loginForm');
-const showRegister = document.getElementById('showRegister');
+const showRegister = document.getElementById('showRegister'); // Usuniemy to
 const characterList = document.getElementById('characterList');
 const createCharacterBtn = document.getElementById('createCharacterBtn');
 const createCharacterModal = document.getElementById('createCharacterModal');
@@ -26,8 +33,8 @@ let members = [];
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
-    const loggedInUser = localStorage.getItem('loggedInUser');
-    if (loggedInUser) {
+    const loggedInUser  = localStorage.getItem('loggedInUser ');
+    if (loggedInUser ) {
         loginScreen.classList.add('hidden');
         loadCharacters();
         characterSelect.classList.remove('hidden');
@@ -46,18 +53,23 @@ loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
+
+    // Sprawdzenie, czy użytkownik i hasło są poprawne
+    const user = users.find(user => user.username === username && user.password === password);
     
-    // Simulate login (no real auth)
-    localStorage.setItem('loggedInUser', username);
-    loginScreen.classList.add('hidden');
-    loadCharacters();
-    characterSelect.classList.remove('hidden');
+    if (user) {
+        // Zaloguj użytkownika
+        localStorage.setItem('loggedInUser ', username);
+        loginScreen.classList.add('hidden');
+        loadCharacters();
+        characterSelect.classList.remove('hidden');
+    } else {
+        alert('Niepoprawna nazwa użytkownika lub hasło. Spróbuj ponownie.');
+    }
 });
 
-// Show Register (not implemented fully)
-showRegister.addEventListener('click', () => {
-    alert('Rejestracja jest symulowana. W prawdziwej aplikacji byłby to formularz rejestracji.');
-});
+// Usunięcie możliwości rejestracji
+showRegister.style.display = 'none'; // Ukryj link do rejestracji
 
 // Load characters from localStorage
 function loadCharacters() {
@@ -137,7 +149,7 @@ function selectCharacter(character) {
 
 // Logout
 logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loggedInUser ');
     mainPanel.classList.add('hidden');
     characterSelect.classList.add('hidden');
     loginScreen.classList.remove('hidden');
