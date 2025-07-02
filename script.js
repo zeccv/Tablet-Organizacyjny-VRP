@@ -5,7 +5,7 @@ const users = [
     { username: 'user2', password: 'password2' }
 ];
 
-// DOM Elements
+// DOM Elements //test
 const loginScreen = document.getElementById('loginScreen');
 const characterSelect = document.getElementById('characterSelect');
 const mainPanel = document.getElementById('mainPanel');
