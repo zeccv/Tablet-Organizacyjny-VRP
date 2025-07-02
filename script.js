@@ -151,42 +151,60 @@ function renderTasks(tasks) {
   if (tasks.length === 0) {
     missionsTab.innerHTML += '<p>Brak zadań do wyświetlenia.</p>';
   } else {
-    const ul = document.createElement('ul');
-    ul.className = 'tasks-list';
+    const container = document.createElement('div');
+    container.className = 'tasks-container';
 
     tasks.forEach((task) => {
-      const li = document.createElement('li');
-      li.textContent = task.title;
+      const card = document.createElement('div');
+      card.className = 'task-card';
+
+      card.innerHTML = `
+        <h3 class="task-title">${task.title}</h3>
+        <p><strong>Lokalizacja:</strong> ${task.location || 'Nie podano'}</p>
+        <p><strong>Opis:</strong> ${task.description || 'Brak opisu'}</p>
+        <p><strong>Czas do kiedy:</strong> ${task.deadline ? new Date(task.deadline).toLocaleString() : 'Nie określono'}</p>
+        <p><strong>Nagroda:</strong> ${task.reward || 'Brak informacji'}</p>
+      `;
 
       if (loggedUserRole === 'admin') {
         const delBtn = document.createElement('button');
         delBtn.textContent = 'Usuń';
-        delBtn.style.marginLeft = '1rem';
+        delBtn.className = 'delete-task-btn';
         delBtn.addEventListener('click', () => deleteTask(task.id));
-        li.appendChild(delBtn);
+        card.appendChild(delBtn);
       }
 
-      ul.appendChild(li);
+      container.appendChild(card);
     });
 
-    missionsTab.appendChild(ul);
+    missionsTab.appendChild(container);
   }
 
   if (loggedUserRole === 'admin') {
     const form = document.createElement('form');
     form.id = 'addTaskForm';
     form.innerHTML = `
-            <h3>Dodaj nowe zadanie</h3>
-            <input type="text" id="newTaskTitle" placeholder="Tytuł zadania" required />
-            <textarea id="newTaskDescription" placeholder="Opis zadania"></textarea>
-            <button type="submit">Dodaj</button>
-        `;
+      <h3>Dodaj nowe zadanie</h3>
+      <div class="form-row">
+        <input type="text" id="newTaskTitle" placeholder="Tytuł zadania" required />
+        <input type="text" id="newTaskLocation" placeholder="Lokalizacja" />
+      </div>
+      <textarea id="newTaskDescription" placeholder="Opis zadania"></textarea>
+      <div class="form-row">
+        <input type="datetime-local" id="newTaskDeadline" placeholder="Czas do kiedy" />
+        <input type="text" id="newTaskReward" placeholder="Nagroda za wykonanie" />
+      </div>
+      <button type="submit" class="btn">Dodaj</button>
+    `;
     missionsTab.appendChild(form);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('newTaskTitle').value.trim();
+      const location = document.getElementById('newTaskLocation').value.trim();
       const description = document.getElementById('newTaskDescription').value.trim();
+      const deadline = document.getElementById('newTaskDeadline').value;
+      const reward = document.getElementById('newTaskReward').value.trim();
 
       if (!title) return alert('Podaj tytuł zadania.');
 
@@ -196,7 +214,10 @@ function renderTasks(tasks) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             title,
+            location,
             description,
+            deadline: deadline || null,
+            reward,
             role: loggedUserRole,
           }),
         });

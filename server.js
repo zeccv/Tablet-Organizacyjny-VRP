@@ -77,14 +77,17 @@ app.get('/tasks', async (req, res) => {
 
 // Dodaj zadanie (tylko admin)
 app.post('/tasks', async (req, res) => {
-  const { title, description, role } = req.body;
+  const { title, description, location, deadline, reward, role } = req.body;
 
   if (role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Brak uprawnień' });
   }
 
   try {
-    await pool.query('INSERT INTO tasks (title, description) VALUES ($1, $2)', [title, description]);
+    await pool.query(
+      'INSERT INTO tasks (title, description, location, deadline, reward) VALUES ($1, $2, $3, $4, $5)',
+      [title, description, location, deadline, reward]
+    );
     res.json({ success: true, message: 'Zadanie dodane' });
   } catch (err) {
     console.error(err);
