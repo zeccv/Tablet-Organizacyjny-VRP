@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -23,19 +24,13 @@
                     </div>
                     <button type="submit" class="btn">Zaloguj</button>
                 </form>
-                <div class="switch-form">
-                    <!-- Usunięto link do rejestracji -->
-                    <a id="showRegister" style="display: none;">Nie masz konta? Zarejestruj się</a>
-                </div>
             </div>
         </div>
 
         <!-- Character Select -->
         <div id="characterSelect" class="hidden">
             <h1>Wybierz postać</h1>
-            <div class="character-grid" id="characterList">
-                <!-- Characters will be loaded here -->
-            </div>
+            <div class="character-grid" id="characterList"></div>
         </div>
 
         <!-- Main Panel -->
@@ -59,48 +54,20 @@
                 </ul>
             </div>
             <div class="content-area">
-                <!-- Members Tab -->
                 <div class="tab-content active" id="membersTab">
                     <h2>Członkowie organizacji</h2>
                     <button class="btn" id="addMemberBtn" style="margin-top: 1rem;">Dodaj członka</button>
-                    <div class="members-list" id="membersList">
-                        <!-- Members will be loaded here -->
-                    </div>
+                    <div class="members-list" id="membersList"></div>
                 </div>
-
-                <!-- Missions Tab -->
-                <div class="tab-content" id="missionsTab">
-                    <h2>Zadania</h2>
-                    <p>Lista aktualnych zadań organizacji.</p>
-                </div>
-
-                <!-- Locations Tab -->
-                <div class="tab-content" id="locationsTab">
-                    <h2>Lokalizacje</h2>
-                    <p>Mapa i lista kontrolowanych lokacji.</p>
-                </div>
-
-                <!-- Equipment Tab -->
-                <div class="tab-content" id="equipmentTab">
-                    <h2>Ekwipunek</h2>
-                    <p>Zasoby i wyposażenie organizacji.</p>
-                </div>
-
-                <!-- Logs Tab -->
-                <div class="tab-content" id="logsTab">
-                    <h2>Logi</h2>
-                    <p>Historia działań organizacji.</p>
-                </div>
-
-                <!-- Settings Tab -->
-                <div class="tab-content" id="settingsTab">
-                    <h2>Ustawienia</h2>
-                    <p>Opcje konfiguracyjne panelu.</p>
-                </div>
+                <div class="tab-content" id="missionsTab"><h2>Zadania</h2></div>
+                <div class="tab-content" id="locationsTab"><h2>Lokalizacje</h2></div>
+                <div class="tab-content" id="equipmentTab"><h2>Ekwipunek</h2></div>
+                <div class="tab-content" id="logsTab"><h2>Logi</h2></div>
+                <div class="tab-content" id="settingsTab"><h2>Ustawienia</h2></div>
             </div>
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
