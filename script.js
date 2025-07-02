@@ -5,7 +5,7 @@ const users = [
     { username: 'user2', password: 'password2' }
 ];
 
-// DOM Elements //test
+// DOM Elements
 const loginScreen = document.getElementById('loginScreen');
 const characterSelect = document.getElementById('characterSelect');
 const mainPanel = document.getElementById('mainPanel');
@@ -33,8 +33,8 @@ let members = [];
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
-    const loggedInUser  = localStorage.getItem('loggedInUser ');
-    if (loggedInUser ) {
+    const loggedInUser   = localStorage.getItem('loggedInUser  ');
+    if (loggedInUser  ) {
         loginScreen.classList.add('hidden');
         loadCharacters();
         characterSelect.classList.remove('hidden');
@@ -59,7 +59,7 @@ loginForm.addEventListener('submit', (e) => {
     
     if (user) {
         // Zaloguj użytkownika
-        localStorage.setItem('loggedInUser ', username);
+        localStorage.setItem('loggedInUser  ', username);
         loginScreen.classList.add('hidden');
         loadCharacters();
         characterSelect.classList.remove('hidden');
@@ -149,7 +149,7 @@ function selectCharacter(character) {
 
 // Logout
 logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser ');
+    localStorage.removeItem('loggedInUser  ');
     mainPanel.classList.add('hidden');
     characterSelect.classList.add('hidden');
     loginScreen.classList.remove('hidden');
