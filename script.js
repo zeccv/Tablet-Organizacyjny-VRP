@@ -1,10 +1,3 @@
-
-const users = [
-    { username: 'admin', password: CryptoJS.SHA256('admin123').toString(), character: { id: 1, name: 'Samir Makajew', type: 'Boss' } },
-    { username: 'user1', password: CryptoJS.SHA256('password1').toString(), character: { id: 2, name: 'John Doe', type: 'Lieutenant' } },
-    { username: 'user2', password: CryptoJS.SHA256('password2').toString(), character: { id: 3, name: 'Jane Smith', type: 'Soldier' } }
-];
-
 const loginForm = document.getElementById('loginForm');
 const loginScreen = document.getElementById('loginScreen');
 const characterSelect = document.getElementById('characterSelect');
@@ -14,20 +7,31 @@ const characterNameDisplay = document.getElementById('characterNameDisplay');
 const characterRankDisplay = document.getElementById('characterRankDisplay');
 const characterAvatar = document.getElementById('characterAvatar');
 
-loginForm.addEventListener('submit', (e) => {
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
-    const hashedPassword = CryptoJS.SHA256(password).toString();
 
-    const user = users.find(user => user.username === username && user.password === hashedPassword);
-    if (user) {
-        localStorage.setItem('loggedInUser', username);
-        loginScreen.classList.add('hidden');
-        loadCharacters(user);
-        characterSelect.classList.remove('hidden');
-    } else {
-        alert('Niepoprawna nazwa użytkownika lub hasło.');
+    try {
+        const response = await fetch('https://tablet-organizacyjny-vrp.onrender.com/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('loggedInUser', data.username);
+            loadCharacters({ character: data.character });
+            loginScreen.classList.add('hidden');
+            characterSelect.classList.remove('hidden');
+        } else {
+            alert('Niepoprawna nazwa użytkownika lub hasło.');
+        }
+    } catch (error) {
+        alert('Błąd połączenia z serwerem.');
+        console.error(error);
     }
 });
 
