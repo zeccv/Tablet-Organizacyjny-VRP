@@ -400,8 +400,8 @@ function renderTasks(tasks) {
         <p><strong>Nagroda:</strong> ${task.reward || 'Brak informacji'}</p>
       `;
 
-      // Usuń opcję usuwania/dodawania jeśli nie admin
-      if (loggedUserRole === 'admin') {
+      // Usuń opcję usuwania/dodawania jeśli nie admin lub user
+      if (loggedUserRole === 'admin' || loggedUserRole === 'user') {
         const delBtn = document.createElement('button');
         delBtn.textContent = 'Usuń';
         delBtn.className = 'delete-task-btn';
@@ -415,7 +415,7 @@ function renderTasks(tasks) {
     missionsTab.appendChild(container);
   }
 
-  if (loggedUserRole === 'admin') {
+  if (loggedUserRole === 'admin' || loggedUserRole === 'user') {
     const form = document.createElement('form');
     form.id = 'addTaskForm';
     form.innerHTML = `
