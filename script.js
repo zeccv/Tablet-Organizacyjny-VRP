@@ -12,7 +12,7 @@ const sidebarMenuLinks = document.querySelectorAll('.sidebar-menu a[data-tab]');
 const tabContents = document.querySelectorAll('.tab-content');
 const membersList = document.getElementById('membersList');
 
-let loggedUserRole = null; // rola użytkownika
+let loggedUserRole = null; // rola użytkownika ("admin" lub "user")
 let loggedUsername = null; // nazwa użytkownika
 let loggedUserOrgId = null; // id organizacji użytkownika
 const MEMBERS_LIMIT = 30;
@@ -33,7 +33,7 @@ loginForm.addEventListener('submit', async (e) => {
     const data = await response.json();
 
     if (data.success) {
-      loggedUserRole = data.role;
+      loggedUserRole = data.role; // "admin" lub "user"
       loggedUsername = data.username;
       // Zapisz w localStorage, aby trzymać stan po odświeżeniu
       localStorage.setItem('loggedInUser', loggedUsername);
@@ -41,7 +41,7 @@ loginForm.addEventListener('submit', async (e) => {
 
       // Załaduj postać i organizację
       loadCharacters({ character: data.character });
-      loggedUserOrgId = data.character?.organizationId; // zakładam, że backend zwraca organizację postaci
+      loggedUserOrgId = data.character?.organizationId;
 
       loginScreen.classList.add('hidden');
       characterSelect.classList.remove('hidden');
@@ -62,11 +62,11 @@ function loadCharacters(user) {
     const card = document.createElement('div');
     card.className = 'character-card';
     card.innerHTML = `
-            <div class="character-type">${char.type}</div>
-            <h3>${char.name}</h3>
-            <p>Ranga: ${char.type}</p>
-            <p>Status: Active</p>
-        `;
+      <div class="character-type">${char.type}</div>
+      <h3>${char.name}</h3>
+      <p>Ranga: ${char.type}</p>
+      <p>Status: Active</p>
+    `;
     card.addEventListener('click', () => selectCharacter(char));
     characterList.appendChild(card);
   }
@@ -77,12 +77,21 @@ function selectCharacter(character) {
   characterSelect.classList.add('hidden');
   mainPanel.classList.remove('hidden');
   characterNameDisplay.textContent = character.name;
-  characterRankDisplay.textContent = loggedUserRole === 'admin' ? 'Opiekun' : 'Szef Organizacji';
+
+  // Wyświetl rolę w przyjaznej formie
+  if (loggedUserRole === 'admin') {
+    characterRankDisplay.textContent = 'Opiekun';
+  } else if (loggedUserRole === 'user') {
+    characterRankDisplay.textContent = 'Szef Organizacji';
+  } else {
+    characterRankDisplay.textContent = 'Nieznana rola';
+  }
+
   characterAvatar.src = `https://placehold.co/100x100?text=${encodeURIComponent(character.type)}`;
 
   updateUIByRole();
 
-  // Załaduj listę członków od razu przy wejściu
+  // Załaduj listę członków
   loadMembers();
 
   // Aktywuj domyślną zakładkę "members"
@@ -210,7 +219,7 @@ function renderMembers(members) {
       </div>
     `;
 
-    // Dodaj przycisk usuwania jeśli rola pozwala
+    // Dodaj przycisk usuwania jeśli rola pozwala (admin/user)
     if (loggedUserRole === 'admin' || loggedUserRole === 'user') {
       // User może usuwać tylko członków swojej organizacji
       const removeBtn = document.createElement('button');

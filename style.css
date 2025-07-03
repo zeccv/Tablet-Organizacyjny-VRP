@@ -30,6 +30,11 @@ body {
     margin: 0 auto;
 }
 
+/* Ukrywanie elementów */
+.hidden {
+    display: none !important;
+}
+
 /* Ukrywanie wszystkich tabów poza aktywnym */
 .tab-content {
     display: none;
@@ -123,6 +128,11 @@ body {
     padding: 2rem;
 }
 
+/* Ukryte na start */
+#characterSelect.hidden {
+    display: none !important;
+}
+
 .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -166,10 +176,15 @@ body {
 
 /* Main Panel */
 #mainPanel {
-    display: none; /* <- TUTAJ LINIA DODANA */
+    display: flex;
     flex: 1;
     min-height: 80vh;
     flex-direction: row;
+}
+
+/* Ukryte na start */
+#mainPanel.hidden {
+    display: none !important;
 }
 
 .sidebar {
@@ -231,7 +246,6 @@ body {
     flex-direction: column;
     gap: 1.5rem;
     min-height: 80vh;
-    /* kluczowa zmiana: obok sidebar */
 }
 
 /* Zadania - karty */
@@ -310,7 +324,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     max-width: 700px;
-    margin: 2rem auto 0; /* na dole, z odstępem od reszty */
+    margin: 2rem auto 0;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
