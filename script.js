@@ -466,7 +466,7 @@ function renderTasks(tasks) {
           form.reset();
           fetchTasks();
         } else {
-          alert('Błąd: ' + data.message);
+             alert('Błąd: ' + data.message);
         }
       } catch (error) {
         alert('Błąd połączenia z serwerem.');
