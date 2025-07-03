@@ -100,6 +100,8 @@ function selectCharacter(character) {
 
 // Aktualizuj UI w zależności od roli
 function updateUIByRole() {
+  // Rola "admin" i "user" mogą dodawać i usuwać członków,
+  // ale tylko admin może dodawać/usuwać zadania.
   if (loggedUserRole === 'admin' || loggedUserRole === 'user') {
     addMemberBtn.style.display = 'inline-block';
   } else {
@@ -400,8 +402,8 @@ function renderTasks(tasks) {
         <p><strong>Nagroda:</strong> ${task.reward || 'Brak informacji'}</p>
       `;
 
-      // Usuń opcję usuwania/dodawania jeśli nie admin lub user
-      if (loggedUserRole === 'admin' || loggedUserRole === 'user') {
+      // Przycisk usuwania tylko dla admina (Opiekuna)
+      if (loggedUserRole === 'admin') {
         const delBtn = document.createElement('button');
         delBtn.textContent = 'Usuń';
         delBtn.className = 'delete-task-btn';
@@ -415,7 +417,8 @@ function renderTasks(tasks) {
     missionsTab.appendChild(container);
   }
 
-  if (loggedUserRole === 'admin' || loggedUserRole === 'user') {
+  // Formularz dodawania zadania tylko dla admina (Opiekuna)
+  if (loggedUserRole === 'admin') {
     const form = document.createElement('form');
     form.id = 'addTaskForm';
     form.innerHTML = `
@@ -465,21 +468,24 @@ function renderTasks(tasks) {
         } else {
           alert('Błąd: ' + data.message);
         }
-      } catch {
+      } catch (error) {
         alert('Błąd połączenia z serwerem.');
+        console.error(error);
       }
     });
+  } else {
+    // Jeśli nie admin, usuń formularz jeśli istnieje
+    const existingForm = document.getElementById('addTaskForm');
+    if (existingForm) existingForm.remove();
   }
 }
 
-async function deleteTask(id) {
+async function deleteTask(taskId) {
   if (!confirm('Czy na pewno chcesz usunąć to zadanie?')) return;
 
   try {
-    const response = await fetch(`https://tablet-organizacyjny-vrp.onrender.com/tasks/${id}`, {
+    const response = await fetch(`https://tablet-organizacyjny-vrp.onrender.com/tasks/${taskId}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: loggedUserRole }),
     });
     const data = await response.json();
 
