@@ -37,7 +37,8 @@ app.post('/login', async (req, res) => {
       success: true,
       character: user.character_data,
       username: user.username,
-      role: user.role, // Zwracamy rolę
+      role: user.role, // admin lub user
+      organizationId: user.organization_id, // ID organizacji
     });
   } catch (err) {
     console.error(err);
@@ -45,26 +46,88 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// REJESTRACJA
-app.post('/register', async (req, res) => {
-  const { username, password, character_data, role = 'user' } = req.body; // domyślnie 'user'
+// GET members of organization (admin i user widzą tylko swoją organizację)
+app.get('/members', async (req, res) => {
+  // oczekujemy query param: ?organizationId=xxx
+  const { organizationId } = req.query;
+  if (!organizationId) {
+    return res.status(400).json({ success: false, message: 'Brak ID organizacji' });
+  }
 
   try {
-    const hash = await bcrypt.hash(password, 10);
-
-    await pool.query(
-      'INSERT INTO users (username, password_hash, character_data, role) VALUES ($1, $2, $3, $4)',
-      [username, hash, character_data, role]
-    );
-
-    res.json({ success: true });
+    const result = await pool.query('SELECT * FROM members WHERE organization_id = $1 ORDER BY created_at DESC', [organizationId]);
+    res.json({ success: true, members: result.rows });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Błąd rejestracji' });
+    res.status(500).json({ success: false, message: 'Błąd serwera' });
   }
 });
 
-// Pobierz listę zadań (dla wszystkich)
+// POST add member to organization (tylko admin lub user może dodawać w swojej organizacji, max 30)
+app.post('/members', async (req, res) => {
+  const { name, role, organizationId, requesterRole } = req.body;
+
+  if (!name || !organizationId || !requesterRole) {
+    return res.status(400).json({ success: false, message: 'Brak wymaganych danych' });
+  }
+
+  if (!['admin', 'user'].includes(requesterRole)) {
+    return res.status(403).json({ success: false, message: 'Brak uprawnień' });
+  }
+
+  try {
+    // Sprawdź liczbe członków w organizacji
+    const countResult = await pool.query('SELECT COUNT(*) FROM members WHERE organization_id = $1', [organizationId]);
+    const count = parseInt(countResult.rows[0].count, 10);
+
+    if (count >= 30) {
+      return res.status(403).json({ success: false, message: 'Limit członków organizacji osiągnięty' });
+    }
+
+    // Dodaj członka
+    await pool.query(
+      'INSERT INTO members (name, role, organization_id) VALUES ($1, $2, $3)',
+      [name, role || 'member', organizationId]
+    );
+
+    res.json({ success: true, message: 'Członek dodany' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Błąd serwera' });
+  }
+});
+
+// DELETE member (tylko admin lub user usuwa członka z własnej organizacji)
+app.delete('/members/:id', async (req, res) => {
+  const { id } = req.params;
+  const { organizationId, requesterRole } = req.body;
+
+  if (!id || !organizationId || !requesterRole) {
+    return res.status(400).json({ success: false, message: 'Brak wymaganych danych' });
+  }
+
+  if (!['admin', 'user'].includes(requesterRole)) {
+    return res.status(403).json({ success: false, message: 'Brak uprawnień' });
+  }
+
+  try {
+    // Sprawdź czy członek należy do organizacji requester
+    const memberResult = await pool.query('SELECT * FROM members WHERE id = $1 AND organization_id = $2', [id, organizationId]);
+
+    if (memberResult.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Członek nie znaleziony w twojej organizacji' });
+    }
+
+    await pool.query('DELETE FROM members WHERE id = $1', [id]);
+
+    res.json({ success: true, message: 'Członek usunięty' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Błąd serwera' });
+  }
+});
+
+// GET tasks - wszyscy widzą wszystkie zadania
 app.get('/tasks', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM tasks ORDER BY created_at DESC');
@@ -75,11 +138,11 @@ app.get('/tasks', async (req, res) => {
   }
 });
 
-// Dodaj zadanie (tylko admin)
+// POST tasks (tylko admin)
 app.post('/tasks', async (req, res) => {
-  const { title, description, location, deadline, reward, role } = req.body;
+  const { title, description, location, deadline, reward, requesterRole } = req.body;
 
-  if (role !== 'admin') {
+  if (requesterRole !== 'admin') {
     return res.status(403).json({ success: false, message: 'Brak uprawnień' });
   }
 
@@ -95,12 +158,12 @@ app.post('/tasks', async (req, res) => {
   }
 });
 
-// Usuń zadanie (tylko admin)
+// DELETE task (tylko admin)
 app.delete('/tasks/:id', async (req, res) => {
   const { id } = req.params;
-  const { role } = req.body;
+  const { requesterRole } = req.body;
 
-  if (role !== 'admin') {
+  if (requesterRole !== 'admin') {
     return res.status(403).json({ success: false, message: 'Brak uprawnień' });
   }
 

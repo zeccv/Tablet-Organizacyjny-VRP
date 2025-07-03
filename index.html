@@ -12,14 +12,14 @@
         <div id="loginScreen">
             <div class="login-box">
                 <h1>Tablet Crime VRP 2.0</h1>
-                <form id="loginForm">
+                <form id="loginForm" aria-label="Formularz logowania">
                     <div class="form-group">
                         <label for="loginUsername">Nazwa użytkownika</label>
-                        <input type="text" id="loginUsername" required />
+                        <input type="text" id="loginUsername" required autocomplete="username" />
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Hasło</label>
-                        <input type="password" id="loginPassword" required />
+                        <input type="password" id="loginPassword" required autocomplete="current-password" />
                     </div>
                     <button type="submit" class="btn">Zaloguj</button>
                 </form>
@@ -27,88 +27,212 @@
         </div>
 
         <!-- Character Select -->
-        <div id="characterSelect" class="hidden">
+        <div id="characterSelect" class="hidden" aria-live="polite">
             <h1>Wybierz postać</h1>
-            <div class="character-grid" id="characterList"></div>
+            <div class="character-grid" id="characterList" role="list"></div>
         </div>
 
         <!-- Main Panel -->
-        <div id="mainPanel" class="hidden">
-            <div class="sidebar">
+        <div id="mainPanel" class="hidden" role="main">
+            <div class="sidebar" role="navigation" aria-label="Menu nawigacyjne">
                 <div class="sidebar-header">
                     <img
                         src="https://placehold.co/100x100"
                         alt="Avatar aktualnej postaci użytkownika"
                         id="characterAvatar"
+                        width="100"
+                        height="100"
                     />
                     <div>
                         <h3 id="characterNameDisplay">John Doe</h3>
                         <p id="characterRankDisplay">Boss</p>
                     </div>
                 </div>
-                <ul class="sidebar-menu">
-                    <li>
-                        <a href="#" class="active" data-tab="members"
-                            ><i>👥</i> Członkowie</a
-                        >
+                <ul class="sidebar-menu" role="menu" aria-orientation="vertical">
+                    <li role="none">
+                        <a href="#" class="active" data-tab="members" role="menuitem" tabindex="0">
+                            <i aria-hidden="true">👥</i> Członkowie
+                        </a>
                     </li>
-                    <li>
-                        <a href="#" data-tab="missions"
-                            ><i>📋</i> Zadania</a
-                        >
+                    <li role="none">
+                        <a href="#" data-tab="missions" role="menuitem" tabindex="-1">
+                            <i aria-hidden="true">📋</i> Zadania
+                        </a>
                     </li>
-                    <li>
-                        <a href="#" data-tab="locations"
-                            ><i>📍</i> Lokalizacje</a
-                        >
+                    <li role="none">
+                        <a href="#" data-tab="locations" role="menuitem" tabindex="-1">
+                            <i aria-hidden="true">📍</i> Lokalizacje
+                        </a>
                     </li>
-                    <li>
-                        <a href="#" data-tab="equipment"
-                            ><i>🎒</i> Ekwipunek</a
-                        >
+                    <li role="none">
+                        <a href="#" data-tab="equipment" role="menuitem" tabindex="-1">
+                            <i aria-hidden="true">🎒</i> Ekwipunek
+                        </a>
                     </li>
-                    <li>
-                        <a href="#" data-tab="logs"><i>📜</i> Logi</a>
+                    <li role="none">
+                        <a href="#" data-tab="logs" role="menuitem" tabindex="-1">
+                            <i aria-hidden="true">📜</i> Logi
+                        </a>
                     </li>
-                    <li>
-                        <a href="#" data-tab="settings"
-                            ><i>⚙️</i> Ustawienia</a
-                        >
+                    <li role="none">
+                        <a href="#" data-tab="settings" role="menuitem" tabindex="-1">
+                            <i aria-hidden="true">⚙️</i> Ustawienia
+                        </a>
                     </li>
-                    <li><a href="#" id="logoutBtn"><i>🚪</i> Wyloguj</a></li>
+                    <li role="none">
+                        <a href="#" id="logoutBtn" role="menuitem" tabindex="-1">
+                            <i aria-hidden="true">🚪</i> Wyloguj
+                        </a>
+                    </li>
                 </ul>
             </div>
+
             <div class="content-area">
-                <div class="tab-content active" id="membersTab">
-                    <h2>Członkowie organizacji</h2>
+                <!-- Członkowie Tab -->
+                <section
+                    class="tab-content active"
+                    id="membersTab"
+                    aria-labelledby="tab-members"
+                    role="tabpanel"
+                    tabindex="0"
+                >
+                    <h2 id="tab-members">Członkowie organizacji</h2>
                     <button
                         class="btn"
                         id="addMemberBtn"
                         style="margin-top: 1rem; display:none"
+                        aria-haspopup="dialog"
                     >
                         Dodaj członka
                     </button>
-                    <div class="members-list" id="membersList"></div>
-                </div>
-                <div class="tab-content" id="missionsTab">
-                    <h2>Zadania</h2>
-                    <p>Tu będą zadania...</p>
-                </div>
-                <div class="tab-content" id="locationsTab">
-                    <h2>Lokalizacje</h2>
-                </div>
-                <div class="tab-content" id="equipmentTab">
-                    <h2>Ekwipunek</h2>
-                </div>
-                <div class="tab-content" id="logsTab">
-                    <h2>Logi</h2>
-                </div>
-                <div class="tab-content" id="settingsTab">
-                    <h2>Ustawienia</h2>
-                </div>
+                    <div class="members-list" id="membersList" aria-live="polite" role="list"></div>
+
+                    <!-- Modal / Formularz dodawania członka (początkowo ukryty) -->
+                    <dialog id="addMemberDialog" aria-modal="true" role="dialog" aria-labelledby="addMemberTitle">
+                        <form id="addMemberForm">
+                            <h3 id="addMemberTitle">Dodaj nowego członka</h3>
+                            <div class="form-group">
+                                <label for="memberName">Imię i nazwisko</label>
+                                <input type="text" id="memberName" name="memberName" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="memberRole">Rola</label>
+                                <select id="memberRole" name="memberRole" required>
+                                    <option value="user">Szef Organizacji</option>
+                                    <option value="admin">Opiekun</option>
+                                </select>
+                            </div>
+                            <div class="dialog-buttons">
+                                <button type="submit" class="btn">Dodaj</button>
+                                <button type="button" id="cancelAddMember" class="btn btn-secondary">Anuluj</button>
+                            </div>
+                        </form>
+                    </dialog>
+                </section>
+
+                <!-- Zadania Tab -->
+                <section
+                    class="tab-content"
+                    id="missionsTab"
+                    aria-labelledby="tab-missions"
+                    role="tabpanel"
+                    tabindex="0"
+                >
+                    <h2 id="tab-missions">Zadania</h2>
+                    <button
+                        class="btn"
+                        id="addTaskBtn"
+                        style="margin-top: 1rem; display:none"
+                        aria-haspopup="dialog"
+                    >
+                        Dodaj zadanie
+                    </button>
+                    <div class="tasks-list" id="tasksList" aria-live="polite" role="list"></div>
+
+                    <!-- Modal / Formularz dodawania zadania (początkowo ukryty) -->
+                    <dialog id="addTaskDialog" aria-modal="true" role="dialog" aria-labelledby="addTaskTitle">
+                        <form id="addTaskForm">
+                            <h3 id="addTaskTitle">Dodaj nowe zadanie</h3>
+                            <div class="form-group">
+                                <label for="taskTitle">Tytuł zadania</label>
+                                <input type="text" id="taskTitle" name="taskTitle" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="taskLocation">Lokalizacja</label>
+                                <input type="text" id="taskLocation" name="taskLocation" />
+                            </div>
+                            <div class="form-group">
+                                <label for="taskDescription">Opis</label>
+                                <textarea id="taskDescription" name="taskDescription"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskDeadline">Deadline</label>
+                                <input type="datetime-local" id="taskDeadline" name="taskDeadline" />
+                            </div>
+                            <div class="form-group">
+                                <label for="taskReward">Nagroda (opcjonalnie)</label>
+                                <input type="text" id="taskReward" name="taskReward" />
+                            </div>
+                            <div class="dialog-buttons">
+                                <button type="submit" class="btn">Dodaj</button>
+                                <button type="button" id="cancelAddTask" class="btn btn-secondary">Anuluj</button>
+                            </div>
+                        </form>
+                    </dialog>
+                </section>
+
+                <!-- Lokalizacje Tab -->
+                <section
+                    class="tab-content"
+                    id="locationsTab"
+                    aria-labelledby="tab-locations"
+                    role="tabpanel"
+                    tabindex="0"
+                >
+                    <h2 id="tab-locations">Lokalizacje</h2>
+                    <p>Tu można dodać listę lokalizacji...</p>
+                </section>
+
+                <!-- Ekwipunek Tab -->
+                <section
+                    class="tab-content"
+                    id="equipmentTab"
+                    aria-labelledby="tab-equipment"
+                    role="tabpanel"
+                    tabindex="0"
+                >
+                    <h2 id="tab-equipment">Ekwipunek</h2>
+                    <p>Tu można zarządzać ekwipunkiem...</p>
+                </section>
+
+                <!-- Logi Tab -->
+                <section
+                    class="tab-content"
+                    id="logsTab"
+                    aria-labelledby="tab-logs"
+                    role="tabpanel"
+                    tabindex="0"
+                >
+                    <h2 id="tab-logs">Logi</h2>
+                    <p>Tu można przeglądać logi systemowe...</p>
+                </section>
+
+                <!-- Ustawienia Tab -->
+                <section
+                    class="tab-content"
+                    id="settingsTab"
+                    aria-labelledby="tab-settings"
+                    role="tabpanel"
+                    tabindex="0"
+                >
+                    <h2 id="tab-settings">Ustawienia</h2>
+                    <p>Tu można zmieniać ustawienia aplikacji...</p>
+                </section>
             </div>
         </div>
     </div>
+
+    <!-- Zewnętrzna biblioteka do szyfrowania (jeśli potrzebna) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="script.js"></script>
 </body>
